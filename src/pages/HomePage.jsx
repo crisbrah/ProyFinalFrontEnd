@@ -1,26 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { personaService } from '../utils/api';
 import { useNavigate } from 'react-router-dom';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { es } from 'date-fns/locale';
-import { TextField, Box, Container, Typography } from '@mui/material';
+import { Container, Typography, Box, List, ListItem, ListItemText } from '@mui/material';
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const HomePage = () => {
-  const [birthdayPeople, setBirthdayPeople] = useState([]);
+  const [birthdayData, setBirthdayData] = useState({});
+  const [weeklyBirthdays, setWeeklyBirthdays] = useState([]);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
 
   useEffect(() => {
-    if (startDate && endDate) {
-      filterBirthdaysByDateRange();
-    } else {
-      fetchAndFilterBirthdayPeople();
-    }
-  }, [startDate, endDate]);
+    fetchAndProcessBirthdayData();
+  }, []);
 
   const fetchPeople = async () => {
     try {
@@ -42,21 +37,35 @@ const HomePage = () => {
     }
   };
 
-  const fetchAndFilterBirthdayPeople = async () => {
+  const fetchAndProcessBirthdayData = async () => {
     const people = await fetchPeople();
-    const filteredPeople = filterBirthdaysThisWeek(people);
-    setBirthdayPeople(filteredPeople);
+    const monthlyBirthdays = processMonthlyBirthdays(people);
+    setBirthdayData(monthlyBirthdays);
+    const thisWeekBirthdays = filterBirthdaysThisWeek(people);
+    setWeeklyBirthdays(thisWeekBirthdays);
   };
 
-  const filterBirthdaysByDateRange = async () => {
-    const people = await fetchPeople();
-    const filteredPeople = people.filter(person => {
-      if (!person.fechaNacimiento) return false;
-      const birthDate = new Date(person.fechaNacimiento);
-      const birthDateThisYear = new Date(new Date().getFullYear(), birthDate.getMonth(), birthDate.getDate());
-      return birthDateThisYear >= dateRange[0] && birthDateThisYear <= dateRange[1];
+  const processMonthlyBirthdays = (people) => {
+    const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const birthdayCounts = new Array(12).fill(0);
+
+    people.forEach(person => {
+      if (person.fechaNacimiento) {
+        const birthDate = new Date(person.fechaNacimiento);
+        birthdayCounts[birthDate.getMonth()]++;
+      }
     });
-    setBirthdayPeople(filteredPeople);
+
+    return {
+      labels: months,
+      datasets: [{
+        label: 'Cumpleaños por mes',
+        data: birthdayCounts,
+        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1
+      }]
+    };
   };
 
   const filterBirthdaysThisWeek = (people) => {
@@ -79,54 +88,55 @@ const HomePage = () => {
     return new Date(dateString).toLocaleDateString('es-ES', options);
   };
 
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Distribución de Cumpleaños por Mes',
+      },
+    },
+  };
+
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" component="h1" gutterBottom>
         Bienvenido a Home
       </Typography>
       
-      <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-        <Box display="flex" justifyContent="space-between" mb={2}>
-          <DatePicker
-            label="Fecha inicial"
-            value={startDate}
-            onChange={(newValue) => setStartDate(newValue)}
-            renderInput={(params) => <TextField {...params} />}
-          />
-          <DatePicker
-            label="Fecha final"
-            value={endDate}
-            onChange={(newValue) => setEndDate(newValue)}
-            renderInput={(params) => <TextField {...params} />}
-          />
-        </Box>
-      </LocalizationProvider>
-
-      <Typography variant="h5" component="h2" gutterBottom>
-        {startDate && endDate 
-          ? `Cumpleaños del ${formatDate(startDate)} al ${formatDate(endDate)}`
-          : 'Cumpleaños de esta semana'}
-      </Typography>
-      
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-          <strong className="font-bold">Error: </strong>
-          <span className="block sm:inline">{error}</span>
-        </div>
+        <Box className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <Typography variant="body1"><strong>Error: </strong>{error}</Typography>
+        </Box>
       )}
-      {birthdayPeople.length > 0 ? (
-        <ul className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-          {birthdayPeople.map((person) => (
-            <li key={person.idPersona} className="mb-2 pb-2 border-b last:border-b-0">
-              <span className="font-semibold">{`${person.nombres} ${person.apePat} ${person.apeMat}`}</span>
-              <span className="ml-2 text-gray-600">
-                {formatDate(person.fechaNacimiento)}
-              </span>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="text-gray-600">No hay cumpleaños en el período seleccionado.</p>
+
+      <Box mt={4}>
+        <Typography variant="h5" component="h2" gutterBottom>
+          Cumpleaños de esta semana
+        </Typography>
+        {weeklyBirthdays.length > 0 ? (
+          <List>
+            {weeklyBirthdays.map((person) => (
+              <ListItem key={person.idPersona}>
+                <ListItemText 
+                  primary={`${person.nombres} ${person.apePat} ${person.apeMat}`}
+                  secondary={formatDate(person.fechaNacimiento)}
+                />
+              </ListItem>
+            ))}
+          </List>
+        ) : (
+          <Typography variant="body1">No hay cumpleaños esta semana.</Typography>
+        )}
+      </Box>
+
+      {birthdayData.labels && (
+        <Box mt={4}>
+          <Bar data={birthdayData} options={chartOptions} />
+        </Box>
       )}
     </Container>
   );

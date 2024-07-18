@@ -124,9 +124,21 @@ const Personas = () => {
     try {
       if (editingId) {
         await personaService.update(editingId, formData);
+        async function fetchPersonas(){
+          const response = await personaService.getAll();
+          setPersonas(response.data);
+        }
+        fetchPersonas();
         toast.success('Persona actualizada correctamente');
+        
+
       } else {
         await personaService.create(formData);
+        async function fetchPersonas(){
+          const response = await personaService.getAll();
+          setPersonas(response.data);
+        }
+        fetchPersonas();
         toast.success('Persona creada correctamente');
       }
       fetchPersonas();
@@ -201,8 +213,8 @@ const Personas = () => {
 
             <form onSubmit={handleSubmit} className="mb-8 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
               <div className="grid grid-cols-3 gap-4">
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="dni">
+                <div className="mb-1">
+                  <label className="block text-gray-700 text-sm font-bold mb-0" htmlFor="dni">
                     DNI
                   </label>
                   <input
@@ -212,12 +224,12 @@ const Personas = () => {
                     value={formData.dni}
                     onChange={handleInputChange}
                     //onKeyPress={handleDniSubmit}
-                    className="shadow appearance-none text-left py-3 px-4 uppercase font-semibold text-smnded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow appearance-none text-left py-2 px-3 text-xs w-full text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="DNI"
                   />
                 </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="nombres">
+                <div className="mb-1">
+                  <label className="block text-gray-700 text-sm font-bold mb-0" htmlFor="nombres">
                     Nombres
                   </label>
                   <input
@@ -226,13 +238,13 @@ const Personas = () => {
                     id="nombres"
                     value={formData.nombres}
                     onChange={handleInputChange}
-                    className="shadow appearance-none text-left py-3 px-4 uppercase font-semibold text-smnded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow appearance-none text-left py-2 px-3 text-xs w-full text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="Nombres"
                     readOnly
                   />
                 </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="apePat">
+                <div className="mb-1">
+                  <label className="block text-gray-700 text-sm font-bold mb-0" htmlFor="apePat">
                     Apellido Paterno
                   </label>
                   <input
@@ -241,13 +253,13 @@ const Personas = () => {
                     id="apePat"
                     value={formData.apePat}
                     onChange={handleInputChange}
-                    className="shadow appearance-none text-left py-3 px-4 uppercase font-semibold text-smnded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow appearance-none text-left py-2 px-3 text-xs w-full text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="Apellido Paterno"
                     readOnly
                   />
                 </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="apeMat">
+                <div className="mb-1">
+                  <label className="block text-gray-700 text-sm font-bold mb-0" htmlFor="apeMat">
                     Apellido Materno
                   </label>
                   <input
@@ -256,13 +268,13 @@ const Personas = () => {
                     id="apeMat"
                     value={formData.apeMat}
                     onChange={handleInputChange}
-                    className="shadow appearance-none text-left py-3 px-4 uppercase font-semibold text-smnded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow appearance-none text-left py-2 px-3 text-xs w-full text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="Apellido Materno"
                     readOnly
                   />
                 </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="fechaNacimiento">
+                <div className="mb-1">
+                  <label className="block text-gray-700 text-sm font-bold mb-0" htmlFor="fechaNacimiento">
                     Fecha de Nacimiento
                   </label>
                   <input
@@ -271,11 +283,11 @@ const Personas = () => {
                     id="fechaNacimiento"
                     value={formData.fechaNacimiento}
                     onChange={handleInputChange}
-                    className="shadow appearance-none text-left py-3 px-4 uppercase font-semibold text-smnded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow appearance-none text-left py-2 px-3 text-xs w-full text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   />
                 </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="lugarNacimiento">
+                <div className="mb-1">
+                  <label className="block text-gray-700 text-sm font-bold mb-0" htmlFor="lugarNacimiento">
                     Lugar de Nacimiento
                   </label>
                   <input
@@ -284,12 +296,12 @@ const Personas = () => {
                     id="lugarNacimiento"
                     value={formData.lugarNacimiento}
                     onChange={handleInputChange}
-                    className="shadow appearance-none text-left py-3 px-4 uppercase font-semibold text-smnded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow appearance-none text-left py-2 px-3 text-xs w-full text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="Lugar de Nacimiento"
                   />
                 </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="esCivil">
+                <div className="mb-1">
+                  <label className="block text-gray-700 text-sm font-bold mb-0" htmlFor="esCivil">
                     Estado Civil
                   </label>
                   <input
@@ -298,12 +310,12 @@ const Personas = () => {
                     id="esCivil"
                     value={formData.esCivil}
                     onChange={handleInputChange}
-                    className="shadow appearance-none text-left py-3 px-4 uppercase font-semibold text-smnded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow appearance-none text-left py-2 px-3 text-xs w-full text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="Estado Civil"
                   />
                 </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="numHijos">
+                <div className="mb-1">
+                  <label className="block text-gray-700 text-sm font-bold mb-0" htmlFor="numHijos">
                     Número de Hijos
                   </label>
                   <input
@@ -312,12 +324,12 @@ const Personas = () => {
                     id="numHijos"
                     value={formData.numHijos}
                     onChange={handleInputChange}
-                    className="shadow appearance-none text-left py-3 px-4 uppercase font-semibold text-smnded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow appearance-none text-left py-2 px-3 text-xs w-full text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="Número de Hijos"
                   />
                 </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="ocupacion">
+                <div className="mb-1">
+                  <label className="block text-gray-700 text-sm font-bold mb-0" htmlFor="ocupacion">
                     Ocupación
                   </label>
                   <input
@@ -326,12 +338,12 @@ const Personas = () => {
                     id="ocupacion"
                     value={formData.ocupacion}
                     onChange={handleInputChange}
-                    className="shadow appearance-none text-left py-3 px-4 uppercase font-semibold text-smnded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow appearance-none text-left py-2 px-3 text-xs w-full text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="Ocupación"
                   />
                 </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="direccion">
+                <div className="mb-1">
+                  <label className="block text-gray-700 text-sm font-bold mb-0" htmlFor="direccion">
                     Dirección
                   </label>
                   <input
@@ -340,12 +352,12 @@ const Personas = () => {
                     id="direccion"
                     value={formData.direccion}
                     onChange={handleInputChange}
-                    className="shadow appearance-none text-left py-3 px-4 uppercase font-semibold text-smnded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow appearance-none text-left py-2 px-3 text-xs w-full text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="Dirección"
                   />
                 </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="distrito">
+                <div className="mb-1">
+                  <label className="block text-gray-700 text-sm font-bold mb-0" htmlFor="distrito">
                     Distrito
                   </label>
                   <input
@@ -354,12 +366,12 @@ const Personas = () => {
                     id="distrito"
                     value={formData.distrito}
                     onChange={handleInputChange}
-                    className="shadow appearance-none text-left py-3 px-4 uppercase font-semibold text-smnded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow appearance-none text-left py-2 px-3 text-xs w-full text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="Distrito"
                   />
                 </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="provincia">
+                <div className="mb-1">
+                  <label className="block text-gray-700 text-sm font-bold mb-0" htmlFor="provincia">
                     Provincia
                   </label>
                   <input
@@ -368,12 +380,12 @@ const Personas = () => {
                     id="provincia"
                     value={formData.provincia}
                     onChange={handleInputChange}
-                    className="shadow appearance-none text-left py-3 px-4 uppercase font-semibold text-smnded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow appearance-none text-left py-2 px-3 text-xs w-full text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="Provincia"
                   />
                 </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="departamento">
+                <div className="mb-1">
+                  <label className="block text-gray-700 text-sm font-bold mb-0" htmlFor="departamento">
                     Departamento
                   </label>
                   <input
@@ -382,12 +394,12 @@ const Personas = () => {
                     id="departamento"
                     value={formData.departamento}
                     onChange={handleInputChange}
-                    className="shadow appearance-none text-left py-3 px-4 uppercase font-semibold text-smnded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow appearance-none text-left py-2 px-3 text-xs w-full text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="Departamento"
                   />
                 </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+                <div className="mb-1">
+                  <label className="block text-gray-700 text-sm font-bold mb-0" htmlFor="email">
                     Email
                   </label>
                   <input
@@ -396,7 +408,7 @@ const Personas = () => {
                     id="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="shadow appearance-none text-left py-3 px-4 uppercase font-semibold text-smnded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow appearance-none text-left py-2 px-3 text-xs w-full text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="correo"
                   />
                 </div>
