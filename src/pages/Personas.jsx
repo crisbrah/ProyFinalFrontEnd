@@ -98,30 +98,36 @@ const Personas = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-/*   const handleDniSubmit = async (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      try {
-        const response = await axios.get(`http://localhost:52337/ms-perez-huatuco/v1/persona/buscardni/${formData.dni}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const { nombres, apePat, apeMat } = response.data;
-        setFormData(prev => ({
-          ...prev,
-          nombres,
-          apePat,
-          apeMat
-        }));
-      } catch (error) {
-        console.error('Error fetching person data:', error);
-        setError('No se pudo obtener la información de la persona. Por favor, verifique el DNI e intente de nuevo.');
-      }
-    }
-  }; */
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+        // validacion de campos
+        const requiredFields = ['dni', 'fechaNacimiento','esCivil','numHijos','ocupacion','direccion', 'distrito','provincia','departamento'];
+        const missingFields = requiredFields.filter(field => !formData[field]);
+        
+          if (missingFields.length > 0) {
+          setError(`Por favor, complete los siguientes campos obligatorios: ${missingFields.join(', ')}`);
+          toast.error('Faltan campos obligatorios');
+          return;
+          }
+  
+        // Validar estado civil
+        if (!['soltero', 'casado'].includes(formData.esCivil.toLowerCase())) {
+          setError('El estado civil debe ser "soltero" o "casado"');
+          toast.error('Estado civil inválido');
+          return;
+        }
+  
+        // Validar número de hijos
+        if (parseInt(formData.numHijos) < 0) {
+          setError('El número de hijos no puede ser negativo');
+          toast.error('Número de hijos inválido');
+          return;
+        }
+
     try {
+
       if (editingId) {
         await personaService.update(editingId, formData);
         async function fetchPersonas(){
@@ -130,9 +136,11 @@ const Personas = () => {
         }
         fetchPersonas();
         toast.success('Persona actualizada correctamente');
-        
-
-      } else {
+        // Esperar un momento antes de refrescar la página
+        setTimeout(() => { location.reload();  }, 2000); // Espera 2 segundos antes de recargar
+      } 
+      else 
+      {
         await personaService.create(formData);
         async function fetchPersonas(){
           const response = await personaService.getAll();
@@ -140,6 +148,7 @@ const Personas = () => {
         }
         fetchPersonas();
         toast.success('Persona creada correctamente');
+        
       }
       fetchPersonas();
       setFormData({
@@ -163,7 +172,7 @@ const Personas = () => {
     } catch (error) {
       //console.error('Error submitting form:', error);
       //setError('Hubo un error al guardar los datos. Por favor, intente de nuevo.');
-      toast.error('Error al guardar los datos');
+      //toast.error('Error al guardar los datos');
     }
   };
 
@@ -302,17 +311,19 @@ const Personas = () => {
                 </div>
                 <div className="mb-1">
                   <label className="block text-gray-700 text-sm font-bold mb-0" htmlFor="esCivil">
-                    Estado Civil
+                  Estado Civil
                   </label>
-                  <input
-                    type="text"
-                    name="esCivil"
-                    id="esCivil"
-                    value={formData.esCivil}
-                    onChange={handleInputChange}
-                    className="shadow appearance-none text-left py-2 px-3 text-xs w-full text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    placeholder="Estado Civil"
-                  />
+                  <select
+                      name="esCivil"
+                      id="esCivil"
+                      value={formData.esCivil}
+                      onChange={handleInputChange}
+                      className="shadow appearance-none text-left py-2 px-3 text-xs w-full text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                       >
+                      <option value="">Seleccione</option>
+                      <option value="soltero">Soltero</option>
+                      <option value="casado">Casado</option>
+                  </select>
                 </div>
                 <div className="mb-1">
                   <label className="block text-gray-700 text-sm font-bold mb-0" htmlFor="numHijos">

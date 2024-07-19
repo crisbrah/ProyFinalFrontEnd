@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:63789/ms-perez-huatuco/v1';
-const PERSONAS_URL = 'http://localhost:63789/ms-perez-huatuco/v1';
+const LOGIN = 'http://localhost:63362/api/v1';
+const API_URL = 'http://localhost:62591/ms-perez-huatuco/v1';
+const PERSONAS_URL = 'http://localhost:62591/ms-perez-huatuco/v1';
 
 // Función para obtener el token del almacenamiento local
 const getToken = () => localStorage.getItem('token');
@@ -15,6 +16,11 @@ const axiosInstance = axios.create({
   }
 });
 
+// Servicios para Login
+export const login = {
+  getsigning: (data) => axiosInstance.post(`${LOGIN}/autenticacion/signin`,data)
+  
+};
 // Servicios para Personas
 export const personaService = {
   getAll: () => axiosInstance.get(`${PERSONAS_URL}/persona/buscartodos`),

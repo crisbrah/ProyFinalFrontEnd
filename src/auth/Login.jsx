@@ -22,7 +22,7 @@ const Login = () => {
         
         const values = { username, password }
         
-        const url='http://localhost:63824/api/v1/autenticacion/signin'
+        const url='http://localhost:63362/api/v1/autenticacion/signin'
   
         try {
           const resp = await axios.post(url, values);
@@ -37,10 +37,10 @@ const Login = () => {
          
           // Extraer el rol del token decodificado
           const role = decodedToken.sub; // o decodedToken.roles[0] si es un array
-          console.log('Rol extraído:', role);
+          console.log('Rol extraí­do:', role);
           localStorage.setItem('userRole', role);
           
-          // Mostrar notificación de éxito
+          // Mostrar notificación de Exito
           toast.success('Inicio de sesión exitoso!', {
             position: "top-right",
             autoClose: 3000,
@@ -51,7 +51,7 @@ const Login = () => {
             progress: undefined,
           });
 
-          // Redirigir a la página principal después de un breve retraso
+          // Redirigir a la página principal despues de un breve retraso
           setTimeout(() => {
             navigate('/');
           }, 1000);
@@ -105,7 +105,7 @@ const Login = () => {
                         id="password" 
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="••••••••" 
+                        placeholder="******************" 
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                         required 
                       />

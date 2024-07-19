@@ -14,7 +14,14 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchAndProcessBirthdayData();
+    async function fetchCumpleanos() {
+      const people = await fetchPeople();
+      const monthlyBirthdays = processMonthlyBirthdays(people);
+      setBirthdayData(monthlyBirthdays);
+      const thisWeekBirthdays = filterBirthdaysThisWeek(people);
+      setWeeklyBirthdays(thisWeekBirthdays);
+    };
+    fetchCumpleanos();
   }, []);
 
   const fetchPeople = async () => {
@@ -37,13 +44,6 @@ const HomePage = () => {
     }
   };
 
-  const fetchAndProcessBirthdayData = async () => {
-    const people = await fetchPeople();
-    const monthlyBirthdays = processMonthlyBirthdays(people);
-    setBirthdayData(monthlyBirthdays);
-    const thisWeekBirthdays = filterBirthdaysThisWeek(people);
-    setWeeklyBirthdays(thisWeekBirthdays);
-  };
 
   const processMonthlyBirthdays = (people) => {
     const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
@@ -102,11 +102,7 @@ const HomePage = () => {
   };
 
   return (
-    <Container maxWidth="lg">
-      <Typography variant="h4" component="h1" gutterBottom>
-        Bienvenido a Home
-      </Typography>
-      
+    <Container maxWidth="lg">     
       {error && (
         <Box className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
           <Typography variant="body1"><strong>Error: </strong>{error}</Typography>
@@ -114,7 +110,7 @@ const HomePage = () => {
       )}
 
       <Box mt={4}>
-        <Typography variant="h5" component="h2" gutterBottom>
+        <Typography variant="h2" component="h1" gutterBottom>
           Cumpleaños de esta semana
         </Typography>
         {weeklyBirthdays.length > 0 ? (
